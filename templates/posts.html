@@ -1,0 +1,31 @@
+{% load static %}
+<div class="container">
+    <div class="row mt-3">
+        {% for post in posts %}
+            <div class="card mb-3 border-light rounded-2" style="max-height: 200px">
+                <div class="row">
+                    <div class="col-2">
+                        <a href="{% url 'post_page' page_slug=post.slug %}"
+                           class="stretched-link">
+                            <img src="{{ post.image.url }}" alt="..." width="200" height="200" />
+                        </a>
+                    </div>
+                    <div class="col">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ post.title }}</h5>
+                            <p class="card-text">{{ post.get_mid_body }}</p>
+                            <div class="row">
+                                <p class="card-text">
+                                    <small class="text-body-secondary">{{ post.created_at|date:"d M y" }}</small>
+                                </p>
+                            </div>
+                            <p class="card-text">
+                                <small class="text-body-secondary"><b>{{ post.user }}</b> tarafından</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>

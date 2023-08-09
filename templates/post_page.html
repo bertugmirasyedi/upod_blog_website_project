@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+    {% load static %}
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col">
+                <h2>{{ post.title }}</h2>
+            </div>
+            {% if post.user.username == request.user.username %}
+                {% include "delete_post_modal.html" %}
+                <div class="col-2">
+                    <div class="mx-3">
+                        <a class="btn btn-secondary btn-sm"
+                           href="{% url 'edit_post' page_slug=post.slug %}">Düzenle</a>
+                        <button class="btn btn-danger btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#delete_post_modal">Sil</button>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <hr />
+        <div class="container-sm">{{ post.body|linebreaksbr }}</div>
+    </div>
+{% endblock content %}

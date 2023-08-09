@@ -1,0 +1,56 @@
+{% load static %}
+<nav class="navbar bg-body-tertiary navbar-expand-lg mt-2"
+     data-bs-theme="light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home_page' %}">
+            <img src="{% static 'bootstrap-fill.svg' %}"
+                 alt="Logo"
+                 width="30"
+                 height="24"
+                 class="d-inline-block align-text-top" />
+            blog.
+        </a>
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="true"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active"
+                       aria-current="page"
+                       href="{% url 'home_page' %}">Ana Sayfa</a>
+                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           href="{% url 'user_posts' username=request.user.username %}">Gönderilerim</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="d-flex">
+            {% if user.is_authenticated %}
+                <div class="mx-3">
+                    <span class="navbar-text mx-2">Hoşgeldin, {{ user.username }}</span>
+                    <a class="btn btn-dark" href="{% url 'create_post' %}" role="button">Yeni Gönderi Oluştur</a>
+                    <a class="btn btn-danger" href="{% url 'logout' %}" role="button">Çıkış Yap</a>
+                </div>
+            {% else %}
+                {% include "login_modal.html" %}
+                {% include "register_modal.html" %}
+                <button class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#login_modal">Giriş Yap</button>
+                <button class="btn btn-success mx-2"
+                        data-bs-toggle="modal"
+                        data-bs-target="#register_modal">Kayıt Ol</button>
+            {% endif %}
+        </div>
+    </div>
+</nav>

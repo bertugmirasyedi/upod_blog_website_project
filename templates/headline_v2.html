@@ -1,0 +1,50 @@
+{% load static %}
+<div class="row">
+    {% for post in headline_posts %}
+        <div class="col">
+            <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
+                 style="background-image: url('{{ post.image.url }}');
+                        background-size: cover">
+                <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+                    <a href="{% url 'post_page' page_slug=post.slug %}"
+                       class="stretched-link"
+                       style="color: inherit;
+                              text-decoration: none">
+                        <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">{{ post.title }}</h3>
+                    </a>
+                    {% comment %} <ul class="d-flex list-unstyled mt-auto">
+                        <li class="me-auto">
+                            <img src="https://github.com/twbs.png" alt="Bootstrap" width="32" height="32" class="rounded-circle border border-white">
+                        </li>
+                        <li class="d-flex align-items-center me-3">
+                            <svg class="bi me-2" width="1em" height="1em">
+                                <use xlink:href="#geo-fill"></use>
+                            </svg>
+                            <small>{{ post.user.username }}</small>
+                        </li>
+                        <li class="d-flex align-items-center">
+                            <svg class="bi me-2" width="1em" height="1em">
+                                <use xlink:href="#calendar3"></use>
+                            </svg>
+                            <small>{{ post.created_at|date:"d M y" }}</small>
+                        </li>
+                    </ul> {% endcomment %}
+                    <div class="row mt-auto align-items-center">
+                        <div class="col">
+                            <svg class="bi me-2" width="1em" height="1em">
+                                <use xlink:href="#geo-fill"></use>
+                            </svg>
+                            <small>{{ post.user.username }}</small>
+                        </div>
+                        <div class="col">
+                            <svg class="bi me-2" width="1em" height="1em">
+                                <use xlink:href="#calendar3"></use>
+                            </svg>
+                            <small>{{ post.created_at|date:"d M y" }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

@@ -1,0 +1,24 @@
+<div class="modal fade"
+     id="delete_post_modal"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Gönderi Silme</h1>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">Gönderiyi silmek istediğinize emin misiniz?</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                <a role="button"
+                   class="btn btn-primary"
+                   href="{% url 'delete_post' page_slug=post.slug %}">Onayla</a>
+            </div>
+        </div>
+    </div>
+</div>
