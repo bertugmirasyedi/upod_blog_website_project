@@ -1,4 +1,5 @@
 {% load static %}
+{% load humanize %}
 <div class="row">
     {% for post in headline_posts %}
         <div class="col">
@@ -36,11 +37,11 @@
                             </svg>
                             <small>{{ post.user.username }}</small>
                         </div>
-                        <div class="col">
+                        <div class="col-auto">
                             <svg class="bi me-2" width="1em" height="1em">
                                 <use xlink:href="#calendar3"></use>
                             </svg>
-                            <small>{{ post.created_at|date:"d M y" }}</small>
+                            <small>{{ post.created_at|naturaltime }}</small>
                         </div>
                     </div>
                 </div>

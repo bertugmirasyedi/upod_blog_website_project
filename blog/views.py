@@ -1,17 +1,16 @@
-from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.db import IntegrityError
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import BlogPost
 
 
 def home_page(request):
-    headline_posts = list(
-        BlogPost.objects.filter(is_deleted=False).order_by("-created_at")
-    )[:3]
-
     all_posts = BlogPost.objects.filter(is_deleted=False).order_by("-created_at")
+
+    headline_posts = all_posts[:3]
 
     context = {
         "title": "blog.",
@@ -24,7 +23,7 @@ def home_page(request):
 
 
 def post_page(request, page_slug):
-    post = BlogPost.objects.filter(slug=page_slug)[0]
+    post = get_object_or_404(BlogPost, slug=page_slug)
 
     context = {"post": post, "title": post.title}
 
@@ -33,9 +32,7 @@ def post_page(request, page_slug):
 
 @login_required(login_url="login")
 def user_posts(request, username):
-    user = User.objects.filter(username=username)[0]
-
-    user_posts = BlogPost.objects.filter(user=user, is_deleted=False).order_by(
+    user_posts = BlogPost.objects.filter(user=request.user, is_deleted=False).order_by(
         "-created_at"
     )
 
@@ -47,21 +44,27 @@ def user_posts(request, username):
 @login_required(login_url="login")
 def create_post(request):
     if request.method == "POST":
-        user = User.objects.filter(username=request.user.username)[0]
+        user = request.user
         post_title = request.POST.get("post_title")
         post_content = request.POST.get("post_content")
         post_image = request.FILES.get("post_image")
 
-        BlogPost.objects.create(
-            user=user,
-            title=post_title,
-            body=post_content,
-            image=post_image,
-        )
+        try:
+            BlogPost.objects.create(
+                user=user,
+                title=post_title,
+                body=post_content,
+                image=post_image,
+            )
 
-        messages.success(request, "Post oluşturuldu.")
+            messages.success(request, "Post oluşturuldu.")
 
-        return redirect("user_posts", username=user.username)
+            return redirect("user_posts", username=user.username)
+
+        except IntegrityError:
+            messages.warning(request, "Bu başlıkta bir gönderi zaten var.")
+
+            return redirect("create_post")
 
     context = {"title": "blog. - Yeni Gönderi Oluştur"}
 
@@ -70,9 +73,9 @@ def create_post(request):
 
 @login_required(login_url="login")
 def edit_post(request, page_slug):
-    post = BlogPost.objects.filter(slug=page_slug)[0]
+    post = get_object_or_404(BlogPost, slug=page_slug)
 
-    if request.user.username == post.user.username:
+    if request.user == post.user:
         if request.method == "POST":
             post_title = (
                 post.title
@@ -111,9 +114,9 @@ def edit_post(request, page_slug):
 
 @login_required(login_url="login")
 def delete_post(request, page_slug):
-    post = BlogPost.objects.filter(slug=page_slug)[0]
+    post = get_object_or_404(BlogPost, slug=page_slug)
 
-    if request.user.username == post.user.username:
+    if request.user == post.user:
         post.is_deleted = True
 
         post.save()
@@ -147,6 +150,10 @@ def register(request):
     username = request.POST.get("username")
     password = request.POST.get("password")
     password_confirm = request.POST.get("password_confirm")
+
+    if username == "" or password == "" or password_confirm == "":
+        messages.warning(request, "Kullanıcı adı veya şifre boş bırakılamaz.")
+        return redirect("home_page")
 
     if password != password_confirm:
         messages.warning(request, "Şifreler uyuşmuyor.")

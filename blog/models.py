@@ -7,7 +7,11 @@ class BlogPost(models.Model):
     title = models.CharField(max_length=150)
     body = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
-    slug = models.SlugField(max_length=150, unique=True, blank=True, null=True)
+
+    slug = models.SlugField(
+        max_length=150, unique=True, blank=True, null=True
+    )  # TODO: Slug denetlemesi ekle
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_deleted = models.BooleanField(default=False)
@@ -27,8 +31,8 @@ class BlogPost(models.Model):
     def get_short_body(self, n=70):
         return f"{self.body[:n]}..."
 
-    def get_mid_body(self, n=300):
-        return f"{self.body[:n]}..."
+    def get_mid_body(self):
+        return self.get_short_body(n=300)
 
     def __str__(self):
         return self.title
